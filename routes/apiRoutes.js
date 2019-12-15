@@ -5,17 +5,32 @@ const fs = require("fs");
 module.exports = function(app) {
 
     app.get("/api/notes", function(req, res) {
-        res.json(notesData);
+
+        var list = [];
+        for (var key in notesData) {
+            list.push(notesData[key]);
+        }
+
+        console.log(list);
+        res.json(list);
     });
 
     app.post("/api/notes", function(req, res) {
         //add id to note 
+        var tempId = uuidv1();
         newNote = {
             text: req.body.text,
             title: req.body.title,
-            id: uuidv1()
+            id: tempId
         }
-        notesData.push(newNote);
+
+        notesData[tempId] = newNote;
+
+        console.log(notesData);
+        fs.writeFile("./db/db.json", JSON.stringify(notesData), (error) => {
+            console.log("Couldn't update the file.")
+        });
+
         res.json(newNote);
     });
 
@@ -23,15 +38,20 @@ module.exports = function(app) {
         const noteId = req.params.id;
         console.log(noteId);
 
-        fs.readFile("./db/db.json", "utf8", (err, data) => {
-            if (err) throw err;
-            const notesFile = JSON.parse(data);
+        delete notesData[noteId];
+        console.log(notesData);
 
-            const updatedNotes = notesFile.filter(note => note.id !== noteId);
-            const json = JSON.stringify(updatedNotes);
-            console.log(updatedNotes);
-
+        fs.writeFile("./db/db.json", JSON.stringify(notesData), (error) => {
+            console.log("Couldn't update the file.")
         });
+
+        var response = {
+            status: 200,
+            success: 'Updated Successfully'
+        }
+
+        res.end(JSON.stringify(response));
+
     });
 
 
