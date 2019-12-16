@@ -19,8 +19,8 @@ module.exports = function(app) {
         //add id to note 
         var tempId = uuidv1();
         newNote = {
-            text: req.body.text,
             title: req.body.title,
+            textarea: req.body.text,
             id: tempId
         }
 
