@@ -1,4 +1,6 @@
 # noteTaker
+https://note-record.herokuapp.com/
+
 Note Taker - creates a toDo list and allows user to add and delete from it
 # Instruction to run the app
 * clone the project repo .
